@@ -1,6 +1,6 @@
 import './style.css';
 
-import { of, map, Observable } from 'rxjs';
+import { of, map, Observable, filter } from 'rxjs';
 import axios from 'axios';
 
 // Open the console in the bottom right to see results.
@@ -39,7 +39,54 @@ import axios from 'axios';
 //   console.log('Subscriber 2: ', event.x)
 // );
 
-of("Alice","Ben","Marta").subscribe({
-  next:(value)=>console.log("name: ",value),
-  complete:()=>console.log("Complete")
+interface NewsItem {
+  category: 'Business' | 'Sports';
+  content: string;
+}
+
+const newsFeed = new Observable<NewsItem>((subscriber) => {
+  setTimeout(
+    () =>
+      subscriber.next({
+        category: 'Business',
+        content: 'A',
+      }),
+    1 * 1000
+  );
+  setTimeout(
+    () =>
+      subscriber.next({
+        category: 'Sports',
+        content: 'B',
+      }),
+    2 * 1000
+  );
+  setTimeout(
+    () =>
+      subscriber.next({
+        category: 'Business',
+        content: 'C',
+      }),
+    3 * 1000
+  );
+  setTimeout(
+    () =>
+      subscriber.next({
+        category: 'Sports',
+        content: 'EE',
+      }),
+    4 * 1000
+  );
+  setTimeout(
+    () =>
+      subscriber.next({
+        category: 'Business',
+        content: 'FF',
+      }),
+    5 * 1000
+  );
 });
+
+newsFeed
+  .pipe(filter((item) => item.category === 'Sports'))
+  .subscribe((value) => console.log(value));
