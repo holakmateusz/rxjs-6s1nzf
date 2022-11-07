@@ -1,7 +1,16 @@
 import './style.css';
 
-import { of, map, Observable, filter, fromEvent, debounceTime } from 'rxjs';
+import {
+  of,
+  map,
+  Observable,
+  filter,
+  fromEvent,
+  debounceTime,
+  EMPTY,
+} from 'rxjs';
 import axios from 'axios';
+import { catchError } from 'rxjs/operators';
 
 // Open the console in the bottom right to see results.
 
@@ -98,3 +107,16 @@ fromEvent(sliderInput, 'input')
     map((event) => event.target['value'])
   )
   .subscribe((value) => console.log(value));
+
+const failingHttpRequest = new Observable((subscriber) => {
+  setTimeout(() => {
+    subscriber.error(new Error('Timeout'));
+  }, 3 * 1000);
+});
+
+console.log('App started');
+
+failingHttpRequest.pipe(catchError((error) => EMPTY)).subscribe({
+  next: (value) => console.log(value),
+  complete: () => console.log('Completed'),
+});
