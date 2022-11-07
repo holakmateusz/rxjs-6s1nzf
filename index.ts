@@ -1,6 +1,6 @@
 import './style.css';
 
-import { of, map, Observable, filter } from 'rxjs';
+import { of, map, Observable, filter, fromEvent, debounceTime } from 'rxjs';
 import axios from 'axios';
 
 // Open the console in the bottom right to see results.
@@ -44,49 +44,57 @@ interface NewsItem {
   content: string;
 }
 
-const newsFeed = new Observable<NewsItem>((subscriber) => {
-  setTimeout(
-    () =>
-      subscriber.next({
-        category: 'Business',
-        content: 'A',
-      }),
-    1 * 1000
-  );
-  setTimeout(
-    () =>
-      subscriber.next({
-        category: 'Sports',
-        content: 'B',
-      }),
-    2 * 1000
-  );
-  setTimeout(
-    () =>
-      subscriber.next({
-        category: 'Business',
-        content: 'C',
-      }),
-    3 * 1000
-  );
-  setTimeout(
-    () =>
-      subscriber.next({
-        category: 'Sports',
-        content: 'EE',
-      }),
-    4 * 1000
-  );
-  setTimeout(
-    () =>
-      subscriber.next({
-        category: 'Business',
-        content: 'FF',
-      }),
-    5 * 1000
-  );
-});
+// const newsFeed = new Observable<NewsItem>((subscriber) => {
+//   setTimeout(
+//     () =>
+//       subscriber.next({
+//         category: 'Business',
+//         content: 'A',
+//       }),
+//     1 * 1000
+//   );
+//   setTimeout(
+//     () =>
+//       subscriber.next({
+//         category: 'Sports',
+//         content: 'B',
+//       }),
+//     2 * 1000
+//   );
+//   setTimeout(
+//     () =>
+//       subscriber.next({
+//         category: 'Business',
+//         content: 'C',
+//       }),
+//     3 * 1000
+//   );
+//   setTimeout(
+//     () =>
+//       subscriber.next({
+//         category: 'Sports',
+//         content: 'EE',
+//       }),
+//     4 * 1000
+//   );
+//   setTimeout(
+//     () =>
+//       subscriber.next({
+//         category: 'Business',
+//         content: 'FF',
+//       }),
+//     5 * 1000
+//   );
+// });
 
-newsFeed
-  .pipe(filter((item) => item.category === 'Sports'))
+// newsFeed
+//   .pipe(filter((item) => item.category === 'Sports'))
+//   .subscribe((value) => console.log(value));
+
+const sliderInput = document.querySelector('input#volume');
+fromEvent(sliderInput, 'input')
+  .pipe(
+    debounceTime(100),
+    map((event) => event.target['value'])
+  )
   .subscribe((value) => console.log(value));
